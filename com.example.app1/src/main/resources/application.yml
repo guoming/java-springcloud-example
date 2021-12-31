@@ -1,0 +1,58 @@
+server:
+  port: 8081
+management:
+  endpoint:
+    health:
+      enable: true
+      roles: admin
+      show-details: always
+  health:
+    db: true
+
+
+
+# DataSource Config
+spring:
+  application:
+    name: app1
+  cloud:
+#     ribbon:
+#         NFLoadBalancerRuleClassName: com.example.common.ribbon.GroupLoadBalanceRule
+      enable: true
+      host: localhost
+      port: 8500
+      discovery:
+        enable: true
+        # 启用服务注册
+        register: true
+        # 服务停止时取消注册
+        deregister: true
+        instanceZone: dc1
+        prefer-ip-address: true
+        health-check-interval: 10s
+        health-check-timeout: 10s
+        health-check-path: /actuator/health
+        ip-address: ${spring.cloud.client.ipaddress}
+        instance-id: ${spring.application.name}:${spring.cloud.client.ipaddress}:${spring.application.instance_id:${server.port}}
+        service-name: ${spring.application.name}
+        port: ${server.port}
+        defaultQueryTag:
+        metadata:
+          env: dev
+          version: v1.0
+
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    schema: classpath:db/schema-h2.sql
+#    data: classpath:db/data-h2.sql
+#    url: jdbc:h2:mem:test
+#    username: root
+#    password: test
+  datasource:
+    name: test
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/com.example.app1?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&allowMultiQueries=true&useLegacyDatetimeCode=false&useSSL=false&zeroDateTimeBehavior=convertToNull
+    type: com.alibaba.druid.pool.DruidDataSource
+    xa.properties.useInformationSchema: true
+    username: root
+    password: 123456
